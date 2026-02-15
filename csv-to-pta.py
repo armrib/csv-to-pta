@@ -155,10 +155,11 @@ def main():
         open(ledger_file, "a") as out,
         open(hash_file, "a") as hash_out,
     ):
-        # Dump config file at the top of the ledger file
-        if os.path.exists(config_file):
-            with open(config_file, "r") as config:
-                out.writelines(config.readlines())
+        if os.path.getsize(ledger_file) == 0:
+            # Dump config file at the top of the ledger file
+            if os.path.exists(config_file):
+                with open(config_file, "r") as config:
+                    out.writelines(config.readlines())
 
         # Read and parse CSV file
         reader = csv.reader(f, delimiter=args.delim)
