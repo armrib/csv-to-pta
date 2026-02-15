@@ -120,7 +120,7 @@ def main():
         logging.warning(
             "Hash file not specified and LEDGER_HASH_FILE environment variable not set, using default."
         )
-        hash_file = f"{ledger_file.split('.')[0]}.hashes"
+        hash_file = f"{ledger_file}.hashes"
 
     # Determine payee file path
     payee_file = (
@@ -130,14 +130,14 @@ def main():
         logging.warning(
             "Payee file not specified and LEDGER_PAYEE_FILE environment variable not set, using default."
         )
-        payee_file = f"{ledger_file.split('.')[0]}.payees"
+        payee_file = f"{ledger_file}.payees"
 
     config_file = args.config if args.config else os.environ.get("LEDGER_CONFIG_FILE")
     if not config_file:
         logging.warning(
             "Config file not specified and LEDGER_CONFIG_FILE environment variable not set, using default."
         )
-        config_file = f"{ledger_file.split('.')[0]}.config"
+        config_file = f"{ledger_file}.config"
 
     # Read files
     existing_hashes = read_existing_hashes(hash_file)
@@ -156,8 +156,9 @@ def main():
         open(hash_file, "a") as hash_out,
     ):
         # Dump config file at the top of the ledger file
-        with open(config_file, "r") as config:
-            out.writelines(config.readlines())
+        if os.path.exists(config_file):
+            with open(config_file, "r") as config:
+                out.writelines(config.readlines())
 
         # Read and parse CSV file
         reader = csv.reader(f, delimiter=args.delim)
